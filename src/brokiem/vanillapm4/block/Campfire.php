@@ -4,17 +4,22 @@ declare(strict_types=1);
 
 namespace brokiem\vanillapm4\block;
 
+use pocketmine\block\Block;
 use pocketmine\block\BlockBreakInfo;
 use pocketmine\block\BlockIdentifier;
 use pocketmine\block\BlockToolType;
 use pocketmine\block\Transparent;
 use pocketmine\block\utils\HorizontalFacingTrait;
+use pocketmine\entity\Entity;
+use pocketmine\entity\Living;
+use pocketmine\event\entity\EntityDamageByBlockEvent;
 use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Facing;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
+use pocketmine\world\BlockTransaction;
 
 //TODO: Tile for cook food
 class Campfire extends Transparent {
@@ -30,28 +35,27 @@ class Campfire extends Transparent {
         return [VanillaItems::COAL()->setCount(mt_rand(1, 2))];
     }
 
-    public function readStateFromData(int $id, int $stateMeta): void {
-        $this->setLit((bool)($stateMeta >> 2));
-        $this->readStateFromData($id, $stateMeta);
-    }
-
-    public function getStateBitmask(): int {
-        return 0b111;
-    }
-
-    public function onInteract(Item $item, int $face, Vector3 $clickVector, ?Player $player = null): bool {
+    public function place(BlockTransaction $tx, Item $item, Block $blockReplace, Block $blockClicked, int $face, Vector3 $clickVector, ?Player $player = null): bool {
         if ($face === Facing::UP) {
-            $block = clone $this;
-            $block->setLit(!$block->isLit());
-            $this->pos->getWorld()->setBlock($this->pos, $block);
-
-            return true;
+            $this->setLit(!$this->isLit());
+            return parent::place($tx, $item, $blockReplace, $blockClicked, $face, $clickVector, $player);
         }
+
         return false;
     }
 
-    protected function writeStateToMeta(): int {
-        return $this->isLit() << 2 | $this->writeStateToMeta();
+    public function hasEntityCollision(): bool {
+        return true;
+    }
+
+    public function onEntityInside(Entity $entity): bool {
+        if ($entity instanceof Living) {
+            $ev = new EntityDamageByBlockEvent($this, $entity, EntityDamageByBlockEvent::CAUSE_CONTACT, 1);
+            $entity->attack($ev);
+            return true;
+        }
+
+        return false;
     }
 
     public function isLit(): bool {
