@@ -1,0 +1,5 @@
+name: VanillaPM4
+main: brokiem\vanillapm4\VanillaPM4
+version: 1.0.0
+api: 4.0.0
+author: brokiem
