@@ -18,5 +18,6 @@ class BlockFactory {
         $i->register(new ShulkerBox(new BID(Ids::SHULKER_BOX, 0, null, TileShulkerBox::class), "Shulker Box"));
         $i->register(new ShulkerBox(new BID(Ids::UNDYED_SHULKER_BOX, 0, null, TileShulkerBox::class), "Shulker Box"));
         $i->register(new Seagrass(new BID(Ids::SEAGRASS, 0), "Seagrass"));
+        $i->register(new Lectern(new BID(Ids::LECTERN, 0), "Lectern"));
     }
 }
