@@ -10,7 +10,6 @@ use pocketmine\block\BlockIdentifier;
 use pocketmine\block\BlockToolType;
 use pocketmine\block\Flowable;
 use pocketmine\block\utils\HorizontalFacingTrait;
-use pocketmine\block\VanillaBlocks;
 use pocketmine\block\Water;
 use pocketmine\item\Item;
 use pocketmine\math\Facing;
@@ -29,9 +28,6 @@ class Seagrass extends Flowable {
         $down = $this->getSide(Facing::DOWN);
         $block = $this->pos->getWorld()->getBlock($this->pos);
         if ($down->isSolid() and $block instanceof Water and ($block->getMeta() === 0 or $block->getMeta() === 8)) {
-            if ($block->getMeta() === 8) {
-                $this->pos->getWorld()->setBlock($this->pos, VanillaBlocks::WATER());
-            }
 
             return parent::place($tx, $item, $blockReplace, $blockClicked, $face, $clickVector, $player);
         }
@@ -42,7 +38,7 @@ class Seagrass extends Flowable {
     public function onNearbyBlockChange(): void {
         $down = $this->getSide(Facing::DOWN);
         $block = $this->pos->getWorld()->getBlock($this->pos);
-        if (!$down->isSolid() and (!$block instanceof Water) and ($block->getMeta() !== 0 or $block->getMeta() !== 8)) {
+        if (!$down->isSolid() and !$block instanceof Water) {
             $this->pos->getWorld()->useBreakOn($this->pos);
         }
     }

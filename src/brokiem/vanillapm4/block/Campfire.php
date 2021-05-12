@@ -9,7 +9,8 @@ use pocketmine\block\BlockBreakInfo;
 use pocketmine\block\BlockIdentifier;
 use pocketmine\block\BlockToolType;
 use pocketmine\block\Transparent;
-use pocketmine\block\utils\HorizontalFacingTrait;
+use pocketmine\block\utils\FacesOppositePlacingPlayerTrait;
+use pocketmine\block\utils\NormalHorizontalFacingInMetadataTrait;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
 use pocketmine\event\entity\EntityDamageByBlockEvent;
@@ -23,12 +24,23 @@ use pocketmine\world\BlockTransaction;
 
 //TODO: Tile for cook food
 class Campfire extends Transparent {
-    use HorizontalFacingTrait;
+    use FacesOppositePlacingPlayerTrait;
+    use NormalHorizontalFacingInMetadataTrait {
+        readStateFromData as readFacingStateFromData;
+    }
 
     protected bool $lit = false;
 
     public function __construct(BlockIdentifier $idInfo, string $name, ?BlockBreakInfo $breakInfo = null) {
         parent::__construct($idInfo, $name, $breakInfo ?? new BlockBreakInfo(2, BlockToolType::AXE, 0, 2));
+    }
+
+    public function readStateFromData(int $id, int $stateMeta): void {
+        $this->readFacingStateFromData($id, $stateMeta);
+    }
+
+    public function getStateBitmask(): int {
+        return 0b111;
     }
 
     public function getDrops(Item $item): array {
