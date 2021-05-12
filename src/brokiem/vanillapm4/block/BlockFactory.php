@@ -27,5 +27,6 @@ class BlockFactory {
         $i->register(new Composter(new BID(Ids::COMPOSTER, 0), "Composter"));
         $i->register(new Transparent(new BID(Ids::BELL, 0), "Bell", new BlockBreakInfo(1, BlockToolType::PICKAXE, 0, 25)));
         $i->register(new BlastFurnace(new BID(Ids::BLAST_FURNACE, 0), "BlastFurnace"));
+        $i->register(new Smoker(new BID(Ids::SMOKER, 0), "Smoker"));
     }
 }
