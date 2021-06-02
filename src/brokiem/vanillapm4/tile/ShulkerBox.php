@@ -85,7 +85,11 @@ class ShulkerBox extends Spawnable implements Container, Nameable {
         return "Shulker Box";
     }
 
-    protected function writeSaveData(CompoundTag $nbt): void {
+    public function onBlockDestroyedHook() : void{
+		//Drop Nothing.
+	}
+
+	protected function writeSaveData(CompoundTag $nbt): void {
         $this->saveName($nbt);
         $this->saveItems($nbt);
         $nbt->setByte(self::TAG_FACING, $this->facing);
